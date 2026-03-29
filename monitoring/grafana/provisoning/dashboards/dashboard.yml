@@ -1,0 +1,59 @@
+{
+  "title": "DevOps Lab — App Dashboard",
+  "uid": "devops-lab-app",
+  "version": 1,
+  "schemaVersion": 38,
+  "refresh": "10s",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Request Rate (req/s)",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "rate(app_request_count_total[1m])",
+          "legendFormat": "{{method}} {{endpoint}} {{status}}"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Request Latency p99 (s)",
+      "type": "timeseries",
+      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "histogram_quantile(0.99, rate(app_request_latency_seconds_bucket[1m]))",
+          "legendFormat": "p99 {{endpoint}}"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Total Requests",
+      "type": "stat",
+      "gridPos": { "x": 0, "y": 8, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "sum(app_request_count_total)"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Error Rate (%)",
+      "type": "stat",
+      "gridPos": { "x": 6, "y": 8, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "sum(rate(app_request_count_total{status=~'5..'}[5m])) / sum(rate(app_request_count_total[5m])) * 100"
+        }
+      ]
+    }
+  ]
+}

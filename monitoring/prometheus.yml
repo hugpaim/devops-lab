@@ -1,0 +1,27 @@
+global:
+  scrape_interval:     15s
+  evaluation_interval: 15s
+  external_labels:
+    env: 'devops-lab'
+
+scrape_configs:
+
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Flask application
+  - job_name: 'devops-lab-app'
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['app:5000']
+        labels:
+          service: 'flask-app'
+          env: 'local'
+
+  # Nginx (via nginx-prometheus-exporter — optional)
+  # - job_name: 'nginx'
+  #   static_configs:
+  #     - targets: ['nginx-exporter:9113']
